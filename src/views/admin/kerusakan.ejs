@@ -1,0 +1,112 @@
+<%- include('../partials/header', { judul: 'Kelola Kerusakan' }) %>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+  <div>
+    <h1 class="h3 fw-bold mb-1">Kelola Kerusakan</h1>
+    <p class="text-muted mb-0">Kesimpulan akhir beserta deskripsi dan saran penanganan.</p>
+  </div>
+  <span class="badge text-bg-primary align-self-center"><%= items.length %> kerusakan</span>
+</div>
+
+<%- include('../partials/admin_nav', { active: active }) %>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header">
+        <%= edit ? 'Ubah Kerusakan ' + edit.kode : 'Tambah Kerusakan' %>
+      </div>
+      <div class="card-body">
+        <form action="<%= edit ? '/admin/kerusakan/' + edit.id + '/update' : '/admin/kerusakan' %>" method="post">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <div class="row g-3">
+            <div class="col-6">
+              <label for="kode" class="form-label">Kode</label>
+              <input type="text" class="form-control" id="kode" name="kode" required maxlength="16"
+                placeholder="K11" value="<%= edit ? edit.kode : '' %>">
+            </div>
+            <div class="col-6">
+              <label for="jenis_perangkat" class="form-label">Perangkat</label>
+              <select class="form-select" id="jenis_perangkat" name="jenis_perangkat" required>
+                <option value="semua" <%= edit && edit.jenis_perangkat === 'semua' ? 'selected' : '' %>>Semua</option>
+                <option value="laptop" <%= edit && edit.jenis_perangkat === 'laptop' ? 'selected' : '' %>>Laptop</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3 mt-3">
+            <label for="nama" class="form-label">Nama Kerusakan</label>
+            <input type="text" class="form-control" id="nama" name="nama" required minlength="3" maxlength="200"
+              value="<%= edit ? edit.nama : '' %>">
+          </div>
+          <div class="mb-3">
+            <label for="deskripsi" class="form-label">Deskripsi</label>
+            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required minlength="10"
+              maxlength="2000"><%= edit ? edit.deskripsi : '' %></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="solusi" class="form-label">Solusi / Saran Penanganan</label>
+            <textarea class="form-control" id="solusi" name="solusi" rows="6" required minlength="10"
+              maxlength="4000"><%= edit ? edit.solusi : '' %></textarea>
+            <div class="form-text">Tulis 3-4 langkah bernomor, satu langkah per baris.</div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save me-1"></i><%= edit ? 'Simpan Perubahan' : 'Tambah' %>
+            </button>
+            <% if (edit) { %>
+              <a href="/admin/kerusakan" class="btn btn-outline-secondary">Batal</a>
+            <% } %>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header">Daftar Kerusakan</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Perangkat</th>
+                <th class="text-end">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% items.forEach(function (k) { %>
+                <tr>
+                  <td><span class="badge text-bg-secondary kode-badge"><%= k.kode %></span></td>
+                  <td>
+                    <strong><%= k.nama %></strong>
+                    <div class="small text-muted text-truncate" style="max-width: 320px;"><%= k.deskripsi %></div>
+                  </td>
+                  <td>
+                    <% if (k.jenis_perangkat === 'laptop') { %>
+                      <span class="badge text-bg-warning text-dark">Laptop</span>
+                    <% } else { %>
+                      <span class="badge text-bg-light border">Semua</span>
+                    <% } %>
+                  </td>
+                  <td class="text-end table-aksi">
+                    <a href="/admin/kerusakan?edit=<%= k.id %>" class="btn btn-sm btn-outline-primary">Ubah</a>
+                    <form action="/admin/kerusakan/<%= k.id %>/hapus" method="post"
+                      data-konfirmasi="Hapus kerusakan <%= k.kode %>? Aturan CF dan pemetaan diagnostik terkait akan ikut terhapus.">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,64 @@
+<%- include('partials/header', { judul: 'Riwayat Diagnosis' }) %>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+  <div>
+    <h1 class="h3 fw-bold mb-1">Riwayat Diagnosis</h1>
+    <p class="text-muted mb-0">Daftar diagnosis yang pernah diproses pada sistem ini.</p>
+  </div>
+  <a href="/diagnosis" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>Diagnosis Baru</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <% if (riwayat.length === 0) { %>
+      <div class="text-center text-muted py-5">
+        <i class="bi bi-inbox display-5 d-block mb-2"></i>
+        Belum ada riwayat diagnosis.
+      </div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Tanggal</th>
+              <th>Perangkat</th>
+              <th>Hasil Utama</th>
+              <th class="text-end">Keyakinan</th>
+              <th class="text-end">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% riwayat.forEach(function (d) { %>
+              <tr>
+                <td><%= d.id %></td>
+                <td><%= formatTanggal(d.tanggal) %></td>
+                <td><span class="badge text-bg-light border"><%= labelPerangkat(d.jenis_perangkat) %></span></td>
+                <td>
+                  <% if (d.hasil_utama) { %>
+                    <span class="badge text-bg-secondary kode-badge"><%= d.hasil_utama %></span>
+                    <%= d.hasil_nama || 'Kerusakan tidak ditemukan' %>
+                  <% } else { %>
+                    <span class="text-muted">Tidak ada hasil di atas ambang</span>
+                  <% } %>
+                </td>
+                <td class="text-end"><%= formatPersen(d.cf_hasil * 100) %></td>
+                <td class="text-end table-aksi">
+                  <a href="/hasil/<%= d.id %>" class="btn btn-sm btn-outline-primary">Lihat</a>
+                  <a href="/hasil/<%= d.id %>/pdf" class="btn btn-sm btn-outline-danger">PDF</a>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<p class="small text-muted mt-3 mb-0">
+  Menampilkan maksimal 200 diagnosis terbaru. Riwayat dapat dilihat siapa saja yang membuka
+  halaman ini; jangan memasukkan data pribadi pada pilihan gejala.
+</p>
+
+<%- include('partials/footer') %>

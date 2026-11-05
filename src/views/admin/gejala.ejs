@@ -1,0 +1,111 @@
+<%- include('../partials/header', { judul: 'Kelola Gejala' }) %>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+  <div>
+    <h1 class="h3 fw-bold mb-1">Kelola Gejala</h1>
+    <p class="text-muted mb-0">Fakta gejala yang dipakai pada tahap forward chaining dan CF.</p>
+  </div>
+  <span class="badge text-bg-primary align-self-center"><%= items.length %> gejala</span>
+</div>
+
+<%- include('../partials/admin_nav', { active: active }) %>
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        <%= edit ? 'Ubah Gejala ' + edit.kode : 'Tambah Gejala' %>
+      </div>
+      <div class="card-body">
+        <form action="<%= edit ? '/admin/gejala/' + edit.id + '/update' : '/admin/gejala' %>" method="post">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <div class="mb-3">
+            <label for="kode" class="form-label">Kode</label>
+            <input type="text" class="form-control" id="kode" name="kode" required maxlength="16"
+              placeholder="Contoh: G16" value="<%= edit ? edit.kode : '' %>">
+            <div class="form-text">Huruf/angka/underscore, maksimal 16 karakter.</div>
+          </div>
+          <div class="mb-3">
+            <label for="nama" class="form-label">Nama Gejala</label>
+            <input type="text" class="form-control" id="nama" name="nama" required minlength="3" maxlength="200"
+              placeholder="Contoh: Komputer menyala tetapi layar berkedip"
+              value="<%= edit ? edit.nama : '' %>">
+          </div>
+          <div class="mb-3">
+            <label for="jenis_perangkat" class="form-label">Jenis Perangkat</label>
+            <select class="form-select" id="jenis_perangkat" name="jenis_perangkat" required>
+              <option value="semua" <%= edit && edit.jenis_perangkat === 'semua' ? 'selected' : '' %>>Semua (Laptop &amp; PC)</option>
+              <option value="laptop" <%= edit && edit.jenis_perangkat === 'laptop' ? 'selected' : '' %>>Khusus Laptop</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="kategori" class="form-label">Kategori Gejala</label>
+            <select class="form-select" id="kategori" name="kategori" required>
+              <% kategoriGejala.forEach(function (k) { %>
+                <option value="<%= k %>"
+                  <%= (edit && edit.kategori === k) || (!edit && k === 'Lainnya') ? 'selected' : '' %>>
+                  <%= k %>
+                </option>
+              <% }); %>
+            </select>
+            <div class="form-text">Digunakan untuk mengelompokkan gejala pada form diagnosis.</div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save me-1"></i><%= edit ? 'Simpan Perubahan' : 'Tambah' %>
+            </button>
+            <% if (edit) { %>
+              <a href="/admin/gejala" class="btn btn-outline-secondary">Batal</a>
+            <% } %>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">Daftar Gejala</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Perangkat</th>
+                <th class="text-end">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% items.forEach(function (g) { %>
+              <tr>
+                <td><span class="badge text-bg-secondary kode-badge"><%= g.kode %></span></td>
+                <td><%= g.nama %></td>
+                <td>
+                  <% if (g.jenis_perangkat === 'laptop') { %>
+                    <span class="badge text-bg-warning text-dark">Laptop</span>
+                  <% } else { %>
+                    <span class="badge text-bg-light border">Semua</span>
+                  <% } %>
+                  <div class="small text-muted"><%= g.kategori || 'Lainnya' %></div>
+                </td>
+                  <td class="text-end table-aksi">
+                    <a href="/admin/gejala?edit=<%= g.id %>" class="btn btn-sm btn-outline-primary">Ubah</a>
+                    <form action="/admin/gejala/<%= g.id %>/hapus" method="post"
+                      data-konfirmasi="Hapus gejala <%= g.kode %>? Aturan CF dan aturan diagnostik yang memakainya akan ikut terdampak.">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

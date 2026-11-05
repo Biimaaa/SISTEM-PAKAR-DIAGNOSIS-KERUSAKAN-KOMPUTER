@@ -1,0 +1,97 @@
+<%- include('partials/header', { judul: 'Tentang Sistem' }) %>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Beranda</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Tentang</li>
+  </ol>
+</nav>
+
+<h1 class="h3 fw-bold mb-3">Tentang Sistem</h1>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h2 class="h5">Deskripsi Singkat</h2>
+        <p class="text-muted mb-0">
+          Sistem Pakar Diagnosis Kerusakan Laptop dan PC adalah aplikasi berbasis aturan yang
+          membantu pengguna mengenali kemungkinan kerusakan perangkat dari gejala yang dialami.
+          Pengguna memilih gejala dan tingkat keyakinan, lalu sistem menghitung kemungkinan
+          kerusakan, menampilkan penjelasan perhitungan, dan memberikan saran penanganan awal.
+        </p>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h2 class="h5">Metode Forward Chaining</h2>
+        <p class="text-muted">
+          Forward chaining bekerja dari fakta menuju kesimpulan. Gejala yang dipilih menjadi fakta,
+          kemudian aturan diagnostik (A01-A08) dievaluasi untuk menentukan kelompok masalah yang aktif,
+          misalnya masalah memori atau masalah penyimpanan. Kelompok masalah ini ditampilkan sebagai
+          dugaan awal.
+        </p>
+        <p class="text-muted mb-0">
+          Kondisi aturan disimpan sebagai struktur DAN/ATAU. Contoh: aturan A04 aktif jika gejala G02
+          <em>dan</em> G03 muncul, sedangkan A05 aktif jika salah satu dari G07, G08, atau G11 muncul.
+        </p>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h2 class="h5">Metode Certainty Factor</h2>
+        <p class="text-muted">
+          Certainty Factor menggabungkan keyakinan pakar terhadap aturan dengan keyakinan pengguna
+          terhadap gejala:
+        </p>
+        <div class="alert alert-light border langkah-perhitungan">
+          CF(gejala) = CF pakar &times; CF user<br>
+          CF gabungan = CF lama + CF baru &times; (1 - CF lama)<br>
+          Persentase = CF akhir &times; 100%
+        </div>
+        <p class="text-muted mb-0">
+          Nilai CF pengguna yang tersedia: tidak tahu (0,0), sedikit yakin (0,4), cukup yakin (0,6),
+          yakin (0,8), dan sangat yakin (1,0). Kerusakan dengan CF akhir di bawah ambang (default 0,2)
+          tidak ditampilkan. Ambang dan bobot pakar dapat diubah oleh admin.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h5">Batasan Sistem</h2>
+        <ul class="text-muted mb-0">
+          <li>Basis pengetahuan berisi 35 gejala, 7 kelompok diagnostik, 16 kerusakan, dan 60 aturan awal (16 aturan diagnostik + 44 aturan CF).</li>
+          <li>Hasil diagnosis bersifat informatif, bukan diagnosis final atau pengganti teknisi.</li>
+          <li>Sistem tidak memeriksa perangkat secara langsung dan tidak membaca sensor perangkat.</li>
+          <li>Kerusakan K05 dan K10 hanya relevan untuk laptop; gejala G10 dan G15 hanya ditampilkan untuk laptop.</li>
+          <li>Riwayat diagnosis dapat dilihat publik pada halaman riwayat; jangan memasukkan data pribadi.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-info-circle me-1"></i>Ringkasan Data</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between"><span>Gejala</span><strong>35</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Diagnostik</span><strong>7</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Kerusakan</span><strong>16</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Aturan diagnostik</span><strong>16</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Aturan CF</span><strong>44</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Ambang default</span><strong>0,2</strong></li>
+      </ul>
+    </div>
+
+    <div class="alert alert-warning mt-4 small mb-0">
+      <i class="bi bi-exclamation-triangle me-1"></i>
+      Jika perangkat mengeluarkan bau terbakar, asap, atau bunyi tidak wajar, segera matikan dan
+      cabut sumber daya. Jangan membongkar komponen yang bertegangan tinggi seperti PSU.
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

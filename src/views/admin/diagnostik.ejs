@@ -1,0 +1,120 @@
+<%- include('../partials/header', { judul: 'Kelola Diagnostik' }) %>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+  <div>
+    <h1 class="h3 fw-bold mb-1">Kelola Diagnostik</h1>
+    <p class="text-muted mb-0">Kelompok masalah antara untuk tahap forward chaining dan pemetaannya ke kerusakan.</p>
+  </div>
+  <span class="badge text-bg-primary align-self-center"><%= items.length %> diagnostik</span>
+</div>
+
+<%- include('../partials/admin_nav', { active: active }) %>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header">
+        <%= edit ? 'Ubah Diagnostik ' + edit.kode : 'Tambah Diagnostik' %>
+      </div>
+      <div class="card-body">
+        <form action="<%= edit ? '/admin/diagnostik/' + edit.id + '/update' : '/admin/diagnostik' %>" method="post">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <div class="mb-3">
+            <label for="kode" class="form-label">Kode</label>
+            <input type="text" class="form-control" id="kode" name="kode" required maxlength="16"
+              placeholder="D07" value="<%= edit ? edit.kode : '' %>">
+          </div>
+          <div class="mb-3">
+            <label for="nama" class="form-label">Nama Diagnostik</label>
+            <input type="text" class="form-control" id="nama" name="nama" required minlength="3" maxlength="200"
+              placeholder="Contoh: Masalah jaringan" value="<%= edit ? edit.nama : '' %>">
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save me-1"></i><%= edit ? 'Simpan Perubahan' : 'Tambah' %>
+            </button>
+            <% if (edit) { %>
+              <a href="/admin/diagnostik" class="btn btn-outline-secondary">Batal</a>
+            <% } %>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header">Daftar Diagnostik</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th class="text-end">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% items.forEach(function (d) { %>
+                <tr>
+                  <td><span class="badge text-bg-secondary kode-badge"><%= d.kode %></span></td>
+                  <td><%= d.nama %></td>
+                  <td class="text-end table-aksi">
+                    <a href="/admin/diagnostik?edit=<%= d.id %>" class="btn btn-sm btn-outline-primary">Ubah</a>
+                    <form action="/admin/diagnostik/<%= d.id %>/hapus" method="post"
+                      data-konfirmasi="Hapus diagnostik <%= d.kode %>? Aturan diagnostik dan pemetaan terkait akan ikut terhapus.">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header"><i class="bi bi-diagram-3 me-1"></i>Pemetaan Diagnostik ke Kerusakan</div>
+  <div class="card-body">
+    <p class="text-muted small">
+      Pemetaan dipakai untuk menampilkan kemungkinan kerusakan pada dugaan kelompok masalah.
+      Perhitungan persentase tetap memakai aturan CF tahap 2.
+    </p>
+    <form action="/admin/diagnostik/mapping" method="post">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="row g-3">
+        <% items.forEach(function (d) { %>
+          <div class="col-md-6">
+            <div class="border rounded p-3 h-100">
+              <div class="fw-semibold mb-2">
+                <span class="badge text-bg-secondary kode-badge"><%= d.kode %></span>
+                <%= d.nama %>
+              </div>
+              <% kerusakan.forEach(function (k) { %>
+                <% const dipilihMapping = (mapping.get(d.id) || []).indexOf(k.id) !== -1; %>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="mapping_<%= d.id %>"
+                    value="<%= k.id %>" id="map-<%= d.id %>-<%= k.id %>" <%= dipilihMapping ? 'checked' : '' %>>
+                  <label class="form-check-label" for="map-<%= d.id %>-<%= k.id %>">
+                    <span class="badge text-bg-light border kode-badge"><%= k.kode %></span>
+                    <%= k.nama %>
+                  </label>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3">
+        <i class="bi bi-save me-1"></i>Simpan Pemetaan
+      </button>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,155 @@
+:root {
+  --warna-utama: #0d6efd;
+  --warna-gelap: #0b2e59;
+}
+
+body {
+  background-color: #f5f7fb;
+  color: #1f2937;
+}
+
+.navbar-brand {
+  letter-spacing: 0.2px;
+}
+
+.hero {
+  background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 45%, #0b2e59 100%);
+  color: #fff;
+  border-radius: 1.25rem;
+  padding: 3rem 2rem;
+  box-shadow: 0 16px 40px rgba(13, 110, 253, 0.18);
+}
+
+.hero h1 {
+  font-weight: 700;
+}
+
+.hero .lead {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.card {
+  border: 1px solid #e6eaf2;
+  border-radius: 0.9rem;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.card-header {
+  background-color: #fff;
+  border-bottom: 1px solid #eef1f6;
+  font-weight: 600;
+}
+
+.stat-card {
+  border-left: 4px solid var(--warna-utama);
+}
+
+.stat-card .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.stat-card .stat-label {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.pilihan-perangkat {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pilihan-perangkat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(13, 110, 253, 0.15);
+}
+
+.gejala-item {
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.gejala-item.terpilih {
+  border-color: var(--warna-utama);
+  background-color: #f0f7ff;
+}
+
+.gejala-item .form-check-label {
+  cursor: pointer;
+}
+
+.kode-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+}
+
+.progress {
+  height: 0.7rem;
+  border-radius: 999px;
+}
+
+.hasil-utama {
+  background: linear-gradient(135deg, #e7f1ff 0%, #ffffff 100%);
+  border: 1px solid #b6d4fe;
+}
+
+.hasil-utama .persen-besar {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: var(--warna-utama);
+  line-height: 1;
+}
+
+.solusi-teks {
+  white-space: pre-line;
+  line-height: 1.7;
+}
+
+.langkah-perhitungan {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+}
+
+.admin-nav .nav-link {
+  white-space: nowrap;
+  color: #334155;
+}
+
+.admin-nav .nav-link.active {
+  background-color: var(--warna-utama);
+  color: #fff;
+}
+
+.table-aksi {
+  white-space: nowrap;
+}
+
+.table-aksi form {
+  display: inline-block;
+}
+
+.text-preline {
+  white-space: pre-line;
+}
+
+.checkbox-gejala {
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.footer {
+  background-color: #fff !important;
+}
+
+@media (max-width: 767.98px) {
+  .hero {
+    padding: 2rem 1.25rem;
+  }
+
+  .hero h1 {
+    font-size: 1.65rem;
+  }
+
+  .hasil-utama .persen-besar {
+    font-size: 1.8rem;
+  }
+}

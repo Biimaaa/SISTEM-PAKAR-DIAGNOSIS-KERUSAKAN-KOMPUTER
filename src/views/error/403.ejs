@@ -1,0 +1,15 @@
+<%- include('../partials/header', { judul: 'Akses Ditolak' }) %>
+
+<div class="text-center py-5">
+  <div class="display-1 fw-bold text-warning">403</div>
+  <h1 class="h3 mt-2">Akses Ditolak</h1>
+  <p class="text-muted">
+    Token keamanan formulir tidak valid atau sudah kedaluwarsa. Muat ulang halaman lalu coba lagi.
+  </p>
+  <div class="d-flex justify-content-center gap-2">
+    <a href="/admin" class="btn btn-primary">Kembali ke Panel Admin</a>
+    <a href="/" class="btn btn-outline-secondary">Beranda</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

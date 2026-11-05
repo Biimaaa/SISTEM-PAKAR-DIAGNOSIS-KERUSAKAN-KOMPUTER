@@ -1,0 +1,54 @@
+<%- include('../partials/header', { judul: 'Riwayat Diagnosis Admin' }) %>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+  <div>
+    <h1 class="h3 fw-bold mb-1">Riwayat Diagnosis</h1>
+    <p class="text-muted mb-0">Seluruh diagnosis yang tersimpan, dapat dicari dan diurutkan.</p>
+  </div>
+  <span class="badge text-bg-primary align-self-center"><%= riwayat.length %> data</span>
+</div>
+
+<%- include('../partials/admin_nav', { active: active }) %>
+
+<div class="card">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="tabelRiwayat">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Tanggal</th>
+            <th>Perangkat</th>
+            <th>Hasil Utama</th>
+            <th class="text-end">CF</th>
+            <th class="text-end">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% riwayat.forEach(function (d) { %>
+            <tr>
+              <td><%= d.id %></td>
+              <td data-order="<%= d.tanggal %>"><%= formatTanggal(d.tanggal) %></td>
+              <td><%= labelPerangkat(d.jenis_perangkat) %></td>
+              <td>
+                <% if (d.hasil_utama) { %>
+                  <span class="badge text-bg-secondary kode-badge"><%= d.hasil_utama %></span>
+                  <%= d.hasil_nama || 'Kerusakan tidak ditemukan' %>
+                <% } else { %>
+                  <span class="text-muted">Tidak ada hasil di atas ambang</span>
+                <% } %>
+              </td>
+              <td class="text-end"><%= formatPersen(d.cf_hasil * 100) %></td>
+              <td class="text-end table-aksi">
+                <a href="/hasil/<%= d.id %>" class="btn btn-sm btn-outline-primary">Detail</a>
+                <a href="/hasil/<%= d.id %>/pdf" class="btn btn-sm btn-outline-danger">PDF</a>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

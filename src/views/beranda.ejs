@@ -1,0 +1,106 @@
+<%- include('partials/header', { judul: 'Beranda' }) %>
+
+<section class="hero">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-8">
+      <span class="badge text-bg-light text-primary mb-3">Forward Chaining + Certainty Factor</span>
+      <h1 class="mb-3">Diagnosis Awal Kerusakan Laptop dan PC</h1>
+      <p class="lead mb-4">
+        Pilih gejala yang Anda alami, tentukan tingkat keyakinan, lalu sistem akan menghitung
+        kemungkinan kerusakan beserta saran penanganan yang aman.
+      </p>
+      <div class="d-flex flex-wrap gap-2">
+        <a href="/diagnosis" class="btn btn-light btn-lg text-primary fw-semibold">
+          <i class="bi bi-search me-1"></i>Mulai Diagnosis
+        </a>
+        <a href="/tentang" class="btn btn-outline-light btn-lg">Pelajari Metode</a>
+      </div>
+    </div>
+    <div class="col-lg-4 text-center d-none d-lg-block">
+      <i class="bi bi-laptop display-1 opacity-75"></i>
+      <i class="bi bi-pc-display display-1 opacity-75 ms-2"></i>
+    </div>
+  </div>
+</section>
+
+<div class="row g-4 mt-1">
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="fs-2 text-primary mb-2"><i class="bi bi-signpost-split"></i></div>
+        <h2 class="h5">1. Forward Chaining</h2>
+        <p class="text-muted mb-0">
+          Fakta gejala yang Anda pilih dicocokkan dengan aturan untuk menentukan kelompok
+          masalah, seperti masalah memori atau penyimpanan.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="fs-2 text-primary mb-2"><i class="bi bi-percent"></i></div>
+        <h2 class="h5">2. Certainty Factor</h2>
+        <p class="text-muted mb-0">
+          Tingkat keyakinan Anda dan bobot pakar digabungkan menjadi persentase keyakinan
+          terhadap setiap kemungkinan kerusakan.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="fs-2 text-primary mb-2"><i class="bi bi-tools"></i></div>
+        <h2 class="h5">3. Saran Penanganan</h2>
+        <p class="text-muted mb-0">
+          Setiap hasil dilengkapi penjelasan perhitungan dan langkah awal yang aman,
+          termasuk saran untuk menghubungi teknisi bila diperlukan.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-3">
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-value"><%= statistik.gejala %></div>
+        <div class="stat-label">Gejala terdaftar</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-value"><%= statistik.kerusakan %></div>
+        <div class="stat-label">Jenis kerusakan</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-value"><%= statistik.aturan %></div>
+        <div class="stat-label">Aturan inferensi</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-value"><%= statistik.diagnosis %></div>
+        <div class="stat-label">Diagnosis tersimpan</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-info mt-4 mb-0" role="alert">
+  <i class="bi bi-info-circle me-1"></i>
+  Sistem ini membantu diagnosis awal. Untuk kerusakan perangkat keras yang berisiko,
+  hentikan pemakaian dan konsultasikan ke teknisi.
+</div>
+
+<%- include('partials/footer') %>

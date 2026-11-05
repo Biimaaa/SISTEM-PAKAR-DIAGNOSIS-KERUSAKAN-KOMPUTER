@@ -1,0 +1,180 @@
+<%- include('../partials/header', { judul: 'Pilih Gejala' }) %>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Beranda</a></li>
+    <li class="breadcrumb-item"><a href="/diagnosis">Diagnosis</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Pilih Gejala</li>
+  </ol>
+</nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+  <div>
+    <h1 class="h3 fw-bold mb-1">Form Gejala</h1>
+    <p class="text-muted mb-0">
+      Perangkat:
+      <span class="badge text-bg-primary"><%= labelPerangkat(perangkat) %></span>
+    </p>
+  </div>
+  <a href="/diagnosis" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left me-1"></i>Ganti Perangkat
+  </a>
+</div>
+
+<% if (error) { %>
+  <div class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle me-1"></i><%= error %>
+  </div>
+<% } %>
+
+<div class="alert alert-info small" role="alert">
+  Centang gejala yang dialami, lalu pilih tingkat keyakinan Anda. Pilihan
+  <strong>Tidak tahu</strong> tidak akan dihitung. Minimal satu gejala harus dipilih.
+  Gunakan kolom pencarian untuk menemukan gejala dengan cepat.
+</div>
+
+<form action="/diagnosis/proses" method="post" id="formGejala">
+  <input type="hidden" name="perangkat" value="<%= perangkat %>">
+  <input type="hidden" name="id-accordion-terbuka" value="">
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-7">
+      <label for="cariGejala" class="visually-hidden">Cari gejala</label>
+      <div class="input-group">
+        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+        <input type="search" class="form-control" id="cariGejala" autocomplete="off"
+          placeholder="Cari gejala, misalnya: layar, baterai, WiFi...">
+      </div>
+    </div>
+    <div class="col-md-5 d-flex align-items-center justify-content-md-end gap-2">
+      <span class="badge text-bg-light border">
+        <span id="jumlah-gejala-dipilih">0</span> gejala dipilih
+      </span>
+      <button type="button" class="btn btn-sm btn-outline-primary" id="bukaSemuaGrup">
+        Buka semua kelompok
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <i class="bi bi-list-check me-1"></i>Daftar Gejala per Kategori
+    </div>
+    <div class="card-body" id="daftarGejala">
+      <% const perKategori = new Map(); %>
+      <% for (const g of gejala) { %>
+        <% if (!perKategori.has(g.kategori)) perKategori.set(g.kategori, []); %>
+        <% perKategori.get(g.kategori).push(g); %>
+      <% } %>
+      <% const totalGejala = gejala.length; %>
+      <% let indeksGrup = 0; %>
+      <% for (const [kategori, daftar] of perKategori) { indeksGrup++; %>
+        <div class="accordion" id="akordeon-<%= indeksGrup %>"
+          data-nama-grup="<%= kategori.toLowerCase() %>">
+          <div class="accordion-item" data-grup="<%= kategori %>">
+            <h2 class="accordion-header">
+              <button class="accordion-button <%= indeksGrup === 1 ? '' : 'collapsed' %>" type="button"
+                data-bs-toggle="collapse" data-bs-target="#grup-<%= indeksGrup %>"
+                aria-expanded="<%= indeksGrup === 1 ? 'true' : 'false' %>"
+                aria-controls="grup-<%= indeksGrup %>">
+                <%= kategori %>
+                <span class="badge text-bg-secondary ms-2"><%= daftar.length %> gejala</span>
+              </button>
+            </h2>
+            <div id="grup-<%= indeksGrup %>"
+              class="accordion-collapse collapse <%= indeksGrup === 1 ? 'show' : '' %>"
+              data-bs-parent="#akordeon-<%= indeksGrup %>">
+              <div class="accordion-body">
+                <% for (const g of daftar) { %>
+                  <%
+                    const dicentang = dipilih.indexOf(g.kode) !== -1;
+                    const nilaiTerpilih = Object.prototype.hasOwnProperty.call(nilaiCf, g.kode)
+                      ? nilaiCf[g.kode]
+                      : 0.6;
+                    const teksCari = (g.nama + ' ' + g.kode + ' ' + g.kategori).toLowerCase();
+                  %>
+                  <div class="gejala-item card mb-2 <%= dicentang ? 'terpilih' : '' %>"
+                    data-gejala-item data-cari="<%= teksCari %>">
+                    <div class="card-body py-2">
+                      <div class="row g-2 align-items-center">
+                        <div class="col-12 col-md">
+                          <div class="form-check mb-0">
+                            <input class="form-check-input" type="checkbox" name="gejala" value="<%= g.kode %>"
+                              id="gejala-<%= g.kode %>" data-gejala-checkbox <%= dicentang ? 'checked' : '' %>>
+                            <label class="form-check-label" for="gejala-<%= g.kode %>">
+                              <span class="badge text-bg-secondary kode-badge"><%= g.kode %></span>
+                              <%= g.nama %>
+                              <% if (g.jenis_perangkat === 'laptop') { %>
+                                <span class="badge text-bg-warning text-dark ms-1">Laptop</span>
+                              <% } %>
+                            </label>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-3">
+                          <label class="visually-hidden" for="cf-<%= g.kode %>">Tingkat keyakinan <%= g.kode %></label>
+                          <select class="form-select form-select-sm" name="cf_<%= g.kode %>" id="cf-<%= g.kode %>"
+                            data-cf-select <%= dicentang ? '' : 'disabled' %>>
+                            <% opsiCf.forEach(function (opsi) { %>
+                              <option value="<%= opsi.nilai %>" <%= Number(nilaiTerpilih) === Number(opsi.nilai) ? 'selected' : '' %>>
+                                <%= opsi.label %>
+                              </option>
+                            <% }); %>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+      <div class="text-center text-muted py-5 d-none" id="tidakDitemukan">
+        <i class="bi bi-emoji-frown fs-2 d-block mb-2"></i>
+        Tidak ada gejala yang cocok dengan pencarian. Total <%= totalGejala %> gejala tersedia
+        untuk jenis perangkat ini.
+      </div>
+    </div>
+    <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <span class="small text-muted">Data hanya dipakai untuk menampilkan hasil diagnosis.</span>
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-cpu me-1"></i>Proses Diagnosis
+      </button>
+    </div>
+  </div>
+</form>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <h2 class="h6 mb-2">Keterangan Tingkat Keyakinan (CF User)</h2>
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered mb-0 align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Pilihan</th>
+            <th>Nilai CF</th>
+            <th>Arti singkat</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% opsiCf.forEach(function (opsi) { %>
+            <tr>
+              <td><%= opsi.label %></td>
+              <td><%= formatAngka(opsi.nilai, 1) %></td>
+              <td class="text-muted">
+                <% if (opsi.nilai === 0) { %>Anda tidak mengetahui atau tidak yakin gejala ini muncul.
+                <% } else if (opsi.nilai === 0.4) { %>Anda merasa gejala mungkin muncul.
+                <% } else if (opsi.nilai === 0.6) { %>Anda cukup yakin gejala ini muncul.
+                <% } else if (opsi.nilai === 0.8) { %>Anda yakin gejala ini muncul.
+                <% } else { %>Anda sangat yakin gejala ini muncul. <% } %>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
